@@ -1,4 +1,5 @@
 ﻿using FluentMigrator;
+using Nop.Core.Domain.Orders;
 using Nop.Core.Infrastructure;
 using Nop.Data;
 using Nop.Data.Migrations;
@@ -22,6 +23,14 @@ public class SettingMigration : MigrationBase
         var displayAttributeCombinationImagesOnly = settingService.GetSetting("producteditorsettings.displayattributecombinationimagesonly");
         if (displayAttributeCombinationImagesOnly is not null)
             settingService.DeleteSetting(displayAttributeCombinationImagesOnly);
+
+        //#7325
+        var orderSettings = settingService.LoadSetting<OrderSettings>();
+        if (!settingService.SettingExists(orderSettings, settings => settings.PlaceOrderWithLock))
+        {
+            orderSettings.PlaceOrderWithLock = false;
+            settingService.SaveSetting(orderSettings, settings => settings.PlaceOrderWithLock);
+        }
     }
 
     public override void Down()

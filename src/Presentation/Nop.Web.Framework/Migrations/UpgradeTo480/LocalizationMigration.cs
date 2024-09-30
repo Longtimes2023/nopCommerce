@@ -247,6 +247,8 @@ public class LocalizationMigration : MigrationBase
             ["Security.Permission.System.ManageMessageQueue"] = "Admin area. Message Queue. Manage",
             ["Security.Permission.System.ManageScheduleTasks"] = "Admin area. Schedule Tasks. Manage",
             ["Security.Permission.System.ManageSystemLog"] = "Admin area. System Log. Manage",
+            //#7325
+            ["Checkout.OrderIsPlacedError"] = "The same order has been placed already",
         }, languageId);
 
         #endregion

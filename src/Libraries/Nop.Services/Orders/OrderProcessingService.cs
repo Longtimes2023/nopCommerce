@@ -1631,8 +1631,11 @@ public partial class OrderProcessingService : IOrderProcessingService
 
         var perform = await _locker.PerformActionWithLockAsync(resource, TimeSpan.FromMinutes(1), async Task () =>
         {
-            var cacheKey = new CacheKey($"order-{resource}");
-            var exist = await _staticCacheManager.GetAsync(cacheKey, () => false);
+            var cacheKey = $"order-{resource}";
+            //var exist = await _staticCacheManager.GetAsync(cacheKey, () => false);
+
+            var exist = await _genericAttributeService.GetAttributeAsync(await _workContext.GetCurrentCustomerAsync(),
+                cacheKey, defaultValue: false);
 
             if (exist)
             {
@@ -1643,7 +1646,8 @@ public partial class OrderProcessingService : IOrderProcessingService
             {
                 result = await placeOrder(details);
                 if (result.Success)
-                    await _staticCacheManager.SetAsync(cacheKey, true);
+                    //await _staticCacheManager.SetAsync(cacheKey, true);
+                    await _genericAttributeService.SaveAttributeAsync(await _workContext.GetCurrentCustomerAsync(), cacheKey, true);
             }
         });
 
